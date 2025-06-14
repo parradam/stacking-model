@@ -4,12 +4,39 @@ version = "0.1.0"
 description = "A model to simulate different stacking strategies"
 readme = "README.md"
 requires-python = ">=3.12"
+# TODO: always pin your dependencies
 dependencies = [
+    # "pytest>=8.3.5",
+    # "ruff>=0.11.8",
+]
+
+[project.optional-dependencies]
+dev = [
     "pytest>=8.3.5",
     "ruff>=0.11.8",
 ]
+
+[project.scripts]
+algorithm = "algorithm.main:main"
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
 ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",
+    "D100", 
+    "D101", 
+    "D103",
+    "D211",
+    "D203",
+    "D213",
+    "ISC001",
+]

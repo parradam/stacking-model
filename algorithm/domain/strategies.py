@@ -7,6 +7,7 @@ class PlacementStrategy(Protocol):
 
 
 class VerticalPlacementStrategy:
+    # XXX: try to avoid __call__ on classes whenever possible
     def __call__(self, storage_system: StorageSystem) -> list[Placement]:
         """
         Get candidate placements for the vertical stacking strategy.
@@ -16,6 +17,7 @@ class VerticalPlacementStrategy:
         shape = storage_system.shape
         occupied = storage_system.items.keys()
 
+        # XXX: move to private function
         def _next_vertical_space_in_stack(x: int, y: int) -> int | None:
             """Find the lowest free z-coordinate for a given (x, y) coordinate."""
             for z in range(shape.z):
@@ -31,3 +33,13 @@ class VerticalPlacementStrategy:
                     candidate_placements.append(Placement(x, y, z))
 
         return candidate_placements
+    
+    
+    def run():
+        ...
+
+
+
+def func():
+    strategy = VerticalPlacementStrategy()
+    strategy = VerticalPlacementStrategy().run()

@@ -1,6 +1,7 @@
 from algorithm.domain.models import Item, Placement, StorageSystem
 
 
+# XXX: either be a class method on StorageSystem
 def place_item(
     storage_system: StorageSystem, selected_placement: Placement, item: Item
 ) -> StorageSystem:

@@ -5,22 +5,31 @@ from algorithm.domain.constraints import MaxHeightConstraint, MaxItemWeightConst
 from algorithm.domain.exceptions import ItemMissingDataError
 
 
-def test_max_height_constraint_finds_placements():
-    items_and_placements = [
-        (Item("item1"), Placement(0, 1, 0)),  # 1 -> single stack
-        (Item("item2"), Placement(1, 0, 0)),  # 2, 3 -> double stack
-        (Item("item3"), Placement(1, 0, 1)),  #
-        (Item("item4"), Placement(1, 1, 0)),  # 4, 5, 6 -> triple stack
-        (Item("item5"), Placement(1, 1, 1)),  #
-        (Item("item6"), Placement(1, 1, 2)),  #
-    ]
+@pytest.mark.max_height
+class TestMaxHeightConstraint:
+    def test_finds_placements(self):
+        ...
 
+
+def test_max_height_constraint_finds_placements():
+    items_placements = {
+        "item1": Placement(0, 1, 0),  # 1 -> single stack
+        "item2": Placement(1, 0, 0),  # 2, 3 -> double stack
+        "item3": Placement(1, 0, 1),  #
+        "item4": Placement(1, 1, 0),  # 4, 5, 6 -> triple stack
+        "item5": Placement(1, 1, 1),  #
+        "item6": Placement(1, 1, 2),  #
+    }
     storage_system_shape = StorageSystemShape("test_system", 2, 2, 4)
-    storage_system = StorageSystem(
-        shape=storage_system_shape,
-    )
-    for item, placement in items_and_placements:
-        storage_system.items[placement].append(item)
+    storage_system = _setup_storage_system(items_placements, storage_system_shape)
+
+    # # XXX: prefer kwargs if it seems like there's magic numbers
+    # storage_system_shape = StorageSystemShape("test_system", 2, 2, 4)
+    # storage_system = StorageSystem(
+    #     shape=storage_system_shape,
+    # )
+    # for item, placement in items_and_placements:
+    #     storage_system.items[placement].append(item)
 
     strategy = VerticalPlacementStrategy()
     candidate_placements = strategy(storage_system)
@@ -139,3 +148,39 @@ def test_max_item_weight_constraint_raises_domain_error_if_weights_missing():
         max_item_weight_constraint.apply(
             storage_system, candidate_placements, Item("item99")
         )
+
+@pytest.mark.paramaterize(
+    "storage_system_shape",
+    [
+       StorageSystemShape("test_system", 1, 2, 1), 
+       StorageSystemShape("test_system", 1, 2, 3), 
+        # pytest.test_case(StorageSystemShape("test_system", 1, 1, 1), id="shape all 1s"), 
+       # test_max_item_weight_constraint_paramaterize_example[shape all 1s]
+    ]
+)
+def test_max_item_weight_constraint_paramaterize_example(storage_system_shape):
+    storage_system = StorageSystem(
+        shape=storage_system_shape,
+    )
+
+    strategy = VerticalPlacementStrategy()
+    candidate_placements = strategy(storage_system)
+
+    # apply the max weight constraint
+    max_item_weight_constraint = MaxItemWeightConstraint()
+
+    with pytest.raises(ItemMissingDataError):
+        max_item_weight_constraint.apply(
+            storage_system, candidate_placements, Item("item99")
+        )
+
+
+def _setup_storage_system(items_placements: dict[str, Placement], storage_system_shape: StorageSystemShape):
+    # XXX: prefer kwargs if it seems like there's magic numbers
+    storage_system = StorageSystem(
+        shape=storage_system_shape,
+    )
+    for item, placement in items_placements.items():
+        storage_system.items[placement].append(Item(item))
+
+    return storage_system

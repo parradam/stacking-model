@@ -15,8 +15,10 @@ def putaway_item(
     candidate_placements: list[Placement] = strategy(storage_system)
 
     if not candidate_placements:
-        raise PlacementError("No candidate placements available")
+        msg = "No candidate placements available"
+        raise PlacementError(msg)
 
+    # XXX: comments are redundant
     # place item
     selected_placement = candidate_placements[0]
     updated_storage_system = place_item(storage_system, selected_placement, item)
