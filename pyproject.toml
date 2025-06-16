@@ -4,9 +4,12 @@ version = "0.1.0"
 description = "A model to simulate different stacking strategies"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "pytest>=8.3.5",
-    "ruff>=0.11.8",
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.5",
+    "ruff==0.11.8",
 ]
 
 [tool.mypy]
