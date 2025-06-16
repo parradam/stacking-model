@@ -1,5 +1,6 @@
 from typing import Protocol
-from algorithm.domain.models import StorageSystem, Placement
+
+from algorithm.domain.models import Placement, StorageSystem
 
 
 class PlacementStrategy(Protocol):

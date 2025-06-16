@@ -1,5 +1,5 @@
 def main() -> None:
-    print("Hello from stacking-model!")
+    pass
 
 
 if __name__ == "__main__":

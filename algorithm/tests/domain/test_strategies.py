@@ -1,8 +1,8 @@
-from algorithm.domain.models import Placement, Item, StorageSystemShape, StorageSystem
+from algorithm.domain.models import Item, Placement, StorageSystem, StorageSystemShape
 from algorithm.domain.strategies import VerticalPlacementStrategy
 
 
-def test_vertical_placement_strategy_finds_candidates():
+def test_vertical_placement_strategy_finds_candidates() -> None:
     # A list of placements for an empty 4x3x2 storage system
     expected_placements = [
         Placement(0, 0, 0),
@@ -29,7 +29,7 @@ def test_vertical_placement_strategy_finds_candidates():
     assert candidate_placements == expected_placements
 
 
-def test_vertical_placement_strategy_finds_candidates_with_items():
+def test_vertical_placement_strategy_finds_candidates_with_items() -> None:
     # A list of placements for a 4x3x2 storage system with some items
     expected_placements = [
         Placement(0, 0, 0),
@@ -64,7 +64,7 @@ def test_vertical_placement_strategy_finds_candidates_with_items():
     assert candidate_placements == expected_placements
 
 
-def test_vertical_placement_strategy_finds_no_candidates_if_full():
+def test_vertical_placement_strategy_finds_no_candidates_if_full() -> None:
     items_and_placements = [
         (Item("item1"), Placement(0, 0, 0)),
         (Item("item2"), Placement(0, 0, 1)),

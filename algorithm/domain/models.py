@@ -1,6 +1,5 @@
-from dataclasses import dataclass, field
 from collections import defaultdict
-from typing import Optional
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -21,13 +20,13 @@ class StorageSystemShape:
 @dataclass(frozen=True)
 class Item:
     id: str
-    weight: Optional[float] = None
+    weight: float | None = None
 
 
 @dataclass()
 class StorageSystem:
     shape: StorageSystemShape
     items: defaultdict[Placement, list[Item]] = field(
-        default_factory=lambda: defaultdict(list)
+        default_factory=lambda: defaultdict(list),
     )
-    max_weight: Optional[float] = None
+    max_weight: float | None = None

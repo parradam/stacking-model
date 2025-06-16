@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from algorithm.domain.models import StorageSystem, Placement, Item
+
+from algorithm.domain.models import Item, Placement, StorageSystem
 
 
 @dataclass(frozen=True)
