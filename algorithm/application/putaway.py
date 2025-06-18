@@ -18,9 +18,7 @@ def putaway_item(
         msg = "No candidate placements available"
         raise PlacementError(msg)
 
-    # place item
     selected_placement = candidate_placements[0]
     updated_storage_system = place_item(storage_system, selected_placement, item)
 
-    # return updated storage system
     return PutawayResult(updated_storage_system, selected_placement, item)
