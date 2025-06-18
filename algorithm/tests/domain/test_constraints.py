@@ -1,6 +1,10 @@
 import pytest
 
-from algorithm.domain.constraints import MaxHeightConstraint, MaxItemWeightConstraint
+from algorithm.domain.constraints import (
+    ConstraintConfig,
+    apply_max_height_constraint,
+    apply_max_item_weight_constraint,
+)
 from algorithm.domain.exceptions import ItemMissingDataError
 from algorithm.domain.models import Item, Placement, StorageSystem, StorageSystemShape
 from algorithm.domain.strategies import VerticalPlacementStrategy
@@ -29,11 +33,14 @@ class TestMaxHeightConstraint:
         candidate_placements = strategy(storage_system)
 
         # apply the max height constraint
-        max_height_constraint = MaxHeightConstraint(max_height=3)
-        constrained_placements = max_height_constraint.apply(
+        constraint_config = ConstraintConfig(
             storage_system,
             candidate_placements,
             Item("item99"),
+        )
+        constrained_placements = apply_max_height_constraint(
+            config=constraint_config,
+            max_z=2,
         )
 
         expected_constrained_placements = [
@@ -60,11 +67,14 @@ class TestMaxHeightConstraint:
         candidate_placements = strategy(storage_system)
 
         # apply the max height constraint
-        max_height_constraint = MaxHeightConstraint(max_height=3)
-        constrained_placements = max_height_constraint.apply(
+        constraint_config = ConstraintConfig(
             storage_system,
             candidate_placements,
             Item("item99"),
+        )
+        constrained_placements = apply_max_height_constraint(
+            config=constraint_config,
+            max_z=2,
         )
 
         assert len(constrained_placements) == 0
@@ -78,11 +88,14 @@ class TestMaxHeightConstraint:
         candidate_placements: list[Placement] = []
 
         # apply the max height constraint
-        max_height_constraint = MaxHeightConstraint(max_height=3)
-        constrained_placements = max_height_constraint.apply(
+        constraint_config = ConstraintConfig(
             storage_system,
             candidate_placements,
             Item("item99"),
+        )
+        constrained_placements = apply_max_height_constraint(
+            config=constraint_config,
+            max_z=2,
         )
 
         assert len(constrained_placements) == 0
@@ -100,11 +113,13 @@ class TestMaxItemWeightConstraint:
         candidate_placements = strategy(storage_system)
 
         # apply the max weight constraint
-        max_item_weight_constraint = MaxItemWeightConstraint()
-        constrained_placements = max_item_weight_constraint.apply(
+        constraint_config = ConstraintConfig(
             storage_system,
             candidate_placements,
             Item("item99", weight=3),
+        )
+        constrained_placements = apply_max_item_weight_constraint(
+            config=constraint_config,
         )
 
         expected_constrained_placements = [
@@ -124,11 +139,13 @@ class TestMaxItemWeightConstraint:
         candidate_placements = strategy(storage_system)
 
         # apply the max weight constraint
-        max_item_weight_constraint = MaxItemWeightConstraint()
-        constrained_placements = max_item_weight_constraint.apply(
+        constraint_config = ConstraintConfig(
             storage_system,
             candidate_placements,
             Item("item99", weight=3),
+        )
+        constrained_placements = apply_max_item_weight_constraint(
+            config=constraint_config,
         )
 
         assert len(constrained_placements) == 0
@@ -145,11 +162,13 @@ class TestMaxItemWeightConstraint:
         candidate_placements = strategy(storage_system)
 
         # apply the max weight constraint
-        max_item_weight_constraint = MaxItemWeightConstraint()
+        constraint_config = ConstraintConfig(
+            storage_system,
+            candidate_placements,
+            Item("item99", weight=3),
+        )
 
         with pytest.raises(ItemMissingDataError):
-            max_item_weight_constraint.apply(
-                storage_system,
-                candidate_placements,
-                Item("item99"),
+            apply_max_item_weight_constraint(
+                config=constraint_config,
             )
