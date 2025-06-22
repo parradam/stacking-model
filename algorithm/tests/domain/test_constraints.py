@@ -1,7 +1,8 @@
 import pytest
 
 from algorithm.domain.constraints import (
-    ConstraintConfig,
+    ConstraintContext,
+    ConstraintStatus,
     apply_max_height_constraint,
     apply_max_item_weight_constraint,
 )
@@ -13,71 +14,92 @@ from algorithm.domain.strategies import VerticalPlacementStrategy
 # TODO(parradam): create lists of placements, map them to items with method
 class TestMaxHeightConstraint:
     def test_finds_placements(self) -> None:
-        items_placements = {
-            "item1": Placement(0, 1, 0),  # 1 -> single stack
-            "item2": Placement(1, 0, 0),  # 2, 3 -> double stack
-            "item3": Placement(1, 0, 1),
-            "item4": Placement(1, 1, 0),  # 4, 5, 6 -> triple stack
-            "item5": Placement(1, 1, 1),
-            "item6": Placement(1, 1, 2),
-        }
-
-        storage_system_shape = StorageSystemShape("test_system", 2, 2, 4)
-        storage_system = StorageSystem(
-            shape=storage_system_shape,
-        )
-        for item, placement in items_placements.items():
-            storage_system.items[placement].append(Item(item))
-
-        strategy = VerticalPlacementStrategy()
-        candidate_placements = strategy(storage_system)
-
-        # apply the max height constraint
-        constraint_config = ConstraintConfig(
-            storage_system,
-            candidate_placements,
-            Item("item99"),
-        )
-        constrained_placements = apply_max_height_constraint(
-            config=constraint_config,
-            max_z=2,
-        )
-
-        expected_constrained_placements = [
-            Placement(0, 0, 0),
-            Placement(0, 1, 1),
-            Placement(1, 0, 2),
-        ]
-
-        assert constrained_placements == expected_constrained_placements
-
-    def test_finds_no_placements(self) -> None:
-        items_placements = {
-            "item1": Placement(0, 0, 0),  # 1 -> single stack
-        }
-
         storage_system_shape = StorageSystemShape("test_system", 1, 1, 1)
         storage_system = StorageSystem(
             shape=storage_system_shape,
         )
+
+        strategy = VerticalPlacementStrategy()
+        candidate_placements = strategy(storage_system)
+
+        input_context = ConstraintContext(
+            storage_system,
+            candidate_placements,
+            Item("item99"),
+        )
+        output_context = apply_max_height_constraint(
+            context=input_context,
+            max_height=2,
+            status=ConstraintStatus.ENABLED,
+        )
+
+        expected_constrained_placements = [
+            Placement(0, 0, 0),
+        ]
+
+        assert output_context.placements == expected_constrained_placements
+
+    def test_eliminates_invalid_placements(self) -> None:
+        storage_system_shape = StorageSystemShape("test_system", 1, 2, 3)
+        storage_system = StorageSystem(
+            shape=storage_system_shape,
+        )
+
+        items_placements = {
+            "item1": Placement(0, 0, 0),
+            "item2": Placement(0, 1, 0),
+        }
         for item, placement in items_placements.items():
             storage_system.items[placement].append(Item(item))
 
         strategy = VerticalPlacementStrategy()
         candidate_placements = strategy(storage_system)
 
-        # apply the max height constraint
-        constraint_config = ConstraintConfig(
+        input_context = ConstraintContext(
             storage_system,
             candidate_placements,
             Item("item99"),
         )
-        constrained_placements = apply_max_height_constraint(
-            config=constraint_config,
-            max_z=2,
+        output_context = apply_max_height_constraint(
+            context=input_context,
+            max_height=2,
+            status=ConstraintStatus.ENABLED,
         )
 
-        assert len(constrained_placements) == 0
+        expected_constrained_placements = [
+            Placement(0, 0, 1),
+            Placement(0, 1, 1),
+        ]
+
+        assert output_context.placements == expected_constrained_placements
+
+    def test_finds_no_placements(self) -> None:
+        storage_system_shape = StorageSystemShape("test_system", 1, 1, 4)
+        storage_system = StorageSystem(
+            shape=storage_system_shape,
+        )
+
+        items_placements = {
+            "item1": Placement(0, 0, 0),  # 1 -> single stack
+        }
+        for item, placement in items_placements.items():
+            storage_system.items[placement].append(Item(item))
+
+        strategy = VerticalPlacementStrategy()
+        candidate_placements = strategy(storage_system)
+
+        input_context = ConstraintContext(
+            storage_system,
+            candidate_placements,
+            Item("item99"),
+        )
+        output_context = apply_max_height_constraint(
+            context=input_context,
+            max_height=1,
+            status=ConstraintStatus.ENABLED,
+        )
+
+        assert len(output_context.placements) == 0
 
     def test_returns_empty_list_if_given_empty_list(self) -> None:
         storage_system_shape = StorageSystemShape("test_system", 2, 2, 2)
@@ -87,18 +109,18 @@ class TestMaxHeightConstraint:
 
         candidate_placements: list[Placement] = []
 
-        # apply the max height constraint
-        constraint_config = ConstraintConfig(
+        input_context = ConstraintContext(
             storage_system,
             candidate_placements,
             Item("item99"),
         )
-        constrained_placements = apply_max_height_constraint(
-            config=constraint_config,
-            max_z=2,
+        output_context = apply_max_height_constraint(
+            context=input_context,
+            max_height=1,
+            status=ConstraintStatus.ENABLED,
         )
 
-        assert len(constrained_placements) == 0
+        assert len(output_context.placements) == 0
 
 
 class TestMaxItemWeightConstraint:
@@ -112,21 +134,21 @@ class TestMaxItemWeightConstraint:
         strategy = VerticalPlacementStrategy()
         candidate_placements = strategy(storage_system)
 
-        # apply the max weight constraint
-        constraint_config = ConstraintConfig(
+        input_context = ConstraintContext(
             storage_system,
             candidate_placements,
             Item("item99", weight=3),
         )
-        constrained_placements = apply_max_item_weight_constraint(
-            config=constraint_config,
+        output_context = apply_max_item_weight_constraint(
+            context=input_context,
+            status=ConstraintStatus.ENABLED,
         )
 
         expected_constrained_placements = [
             Placement(0, 0, 0),
         ]
 
-        assert constrained_placements == expected_constrained_placements
+        assert output_context.placements == expected_constrained_placements
 
     def test_finds_no_placements(self) -> None:
         storage_system_shape = StorageSystemShape("test_system", 1, 1, 1)
@@ -138,17 +160,17 @@ class TestMaxItemWeightConstraint:
         strategy = VerticalPlacementStrategy()
         candidate_placements = strategy(storage_system)
 
-        # apply the max weight constraint
-        constraint_config = ConstraintConfig(
+        input_context = ConstraintContext(
             storage_system,
             candidate_placements,
             Item("item99", weight=3),
         )
-        constrained_placements = apply_max_item_weight_constraint(
-            config=constraint_config,
+        output_context = apply_max_item_weight_constraint(
+            context=input_context,
+            status=ConstraintStatus.ENABLED,
         )
 
-        assert len(constrained_placements) == 0
+        assert len(output_context.placements) == 0
 
     def test_raises_domain_error_if_weights_missing(
         self,
@@ -161,8 +183,7 @@ class TestMaxItemWeightConstraint:
         strategy = VerticalPlacementStrategy()
         candidate_placements = strategy(storage_system)
 
-        # apply the max weight constraint
-        constraint_config = ConstraintConfig(
+        input_context = ConstraintContext(
             storage_system,
             candidate_placements,
             Item("item99", weight=3),
@@ -170,5 +191,6 @@ class TestMaxItemWeightConstraint:
 
         with pytest.raises(ItemMissingDataError):
             apply_max_item_weight_constraint(
-                config=constraint_config,
+                context=input_context,
+                status=ConstraintStatus.ENABLED,
             )

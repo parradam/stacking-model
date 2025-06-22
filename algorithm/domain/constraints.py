@@ -1,14 +1,25 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field, replace
+from enum import Enum
 
-from algorithm.domain.exceptions import ItemMissingDataError, StorageSystemError
+from algorithm.domain.exceptions import (
+    ConstraintError,
+    ItemMissingDataError,
+    StorageSystemError,
+)
 from algorithm.domain.models import Item, Placement, StorageSystem
 
 
+class ConstraintStatus(Enum):
+    ENABLED = 0
+    DISABLED = 1
+
+
 @dataclass
-class ConstraintConfig:
+class ConstraintContext:
     system: StorageSystem
     placements: list[Placement]
     item: Item
+    invalid_placements: list[Placement] = field(default_factory=list[Placement])
 
 
 def _contains_none(*args: object) -> bool:
@@ -17,21 +28,48 @@ def _contains_none(*args: object) -> bool:
 
 
 def apply_max_height_constraint(
-    config: ConstraintConfig,
-    max_z: int,
-) -> list[Placement]:
-    return [p for p in config.placements if p.z <= max_z]
+    context: ConstraintContext,
+    max_height: int | None = None,
+    status: ConstraintStatus = ConstraintStatus.DISABLED,
+) -> ConstraintContext:
+    if status == ConstraintStatus.DISABLED:
+        return context
+
+    if max_height is None:
+        msg = "max_height not specified"
+        raise ConstraintError(msg)
+
+    valid_placements = [p for p in context.placements if p.z < max_height]
+    invalid_placements = context.invalid_placements + [
+        p for p in context.placements if p not in valid_placements
+    ]
+
+    return replace(
+        context,
+        placements=valid_placements,
+        invalid_placements=invalid_placements,
+    )
 
 
-def apply_max_item_weight_constraint(config: ConstraintConfig) -> list[Placement]:
-    system = config.system
-    placements = config.placements
-    item = config.item
+def apply_max_item_weight_constraint(
+    context: ConstraintContext,
+    status: ConstraintStatus = ConstraintStatus.DISABLED,
+) -> ConstraintContext:
+    if status == ConstraintStatus.DISABLED:
+        return context
 
-    constrained_placements: list[Placement] = []
+    system = context.system
+    placements = context.placements
+    item = context.item
 
+    valid_placements: list[Placement] = []
+    invalid_placements: list[Placement] = []
+    invalid_placements += context.invalid_placements
+
+    # TODO(parradam): rather than raising Exceptions, add to a warnings variable
+    # TODO(parradam): subdivide warnings with flag (in/out dataset dep on config)
     for placement in placements:
-        if _contains_none(config.system.max_weight, item.weight):
+        if _contains_none(context.system.max_weight, item.weight):
             raise ItemMissingDataError(item.id, "weight information")
 
         if system.max_weight is None:
@@ -42,5 +80,12 @@ def apply_max_item_weight_constraint(config: ConstraintConfig) -> list[Placement
             raise ItemMissingDataError(item.id, "weight information")
 
         if item.weight <= system.max_weight:
-            constrained_placements.append(placement)
-    return constrained_placements
+            valid_placements.append(placement)
+        else:
+            invalid_placements.append(placement)
+
+    return replace(
+        context,
+        placements=valid_placements,
+        invalid_placements=invalid_placements,
+    )
