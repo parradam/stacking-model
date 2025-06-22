@@ -25,5 +25,5 @@ ignore = [
     "FIX002",   # todos resolve
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "**/test_*.py" = ["S101"] # disable assert warning for test files
