@@ -7,6 +7,7 @@ from algorithm.domain.exceptions import (
     StorageSystemError,
 )
 from algorithm.domain.models import Item, Placement, StorageSystem
+from algorithm.domain.strategies import PutawayContext
 
 
 class ConstraintStatus(Enum):
@@ -28,10 +29,10 @@ def _contains_none(*args: object) -> bool:
 
 
 def apply_max_height_constraint(
-    context: ConstraintContext,
+    context: PutawayContext,
     max_height: int | None = None,
     status: ConstraintStatus = ConstraintStatus.DISABLED,
-) -> ConstraintContext:
+) -> PutawayContext:
     if status == ConstraintStatus.DISABLED:
         return context
 
@@ -52,9 +53,9 @@ def apply_max_height_constraint(
 
 
 def apply_max_item_weight_constraint(
-    context: ConstraintContext,
+    context: PutawayContext,
     status: ConstraintStatus = ConstraintStatus.DISABLED,
-) -> ConstraintContext:
+) -> PutawayContext:
     if status == ConstraintStatus.DISABLED:
         return context
 

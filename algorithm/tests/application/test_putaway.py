@@ -3,78 +3,61 @@ import pytest
 from algorithm.application.putaway import putaway_item
 from algorithm.domain.exceptions import PlacementError
 from algorithm.domain.models import Item, StorageSystem, StorageSystemShape
-from algorithm.domain.strategies import VerticalPlacementStrategy
+from algorithm.domain.strategies import PutawayContext
 
 
 class TestPutaway:
     def test_one_item(self) -> None:
-        storage_system_shape = StorageSystemShape("test_system", 3, 3, 3)
-        storage_system = StorageSystem(
-            shape=storage_system_shape,
+        system = StorageSystem(
+            shape=StorageSystemShape("test_system", 3, 3, 3),
         )
-        strategy = VerticalPlacementStrategy()
-        item1 = Item("item1")
+        item = Item("item1")
 
-        assert storage_system.items == {}
+        assert system.items == {}
 
-        result = putaway_item(
-            storage_system=storage_system,
-            strategy=strategy,
-            item=item1,
-        )
+        input_context = PutawayContext(system=system, item=item)
+        output_context = putaway_item(input_context)
 
-        updated_storage_system = result.storage_system
-        placement = result.placement
-        assert len(updated_storage_system.items) == 1
-        assert updated_storage_system.items[placement] == [item1]
+        final_placement = output_context.final_placement
+
+        assert final_placement
+        assert len(output_context.system.items[final_placement]) == 1
+        assert output_context.system.items[final_placement] == [item]
 
     def test_works_until_full(self) -> None:
-        storage_system_shape = StorageSystemShape("test_system", 2, 2, 2)
-        storage_system = StorageSystem(
-            shape=storage_system_shape,
+        system = StorageSystem(
+            shape=StorageSystemShape("test_system", 2, 2, 2),
         )
-        strategy = VerticalPlacementStrategy()
         items = [Item(f"item{i}") for i in range(8)]
 
-        assert storage_system.items == {}
+        assert system.items == {}
 
         for item in items:
-            result = putaway_item(
-                storage_system=storage_system,
-                strategy=strategy,
-                item=item,
-            )
-            storage_system = result.storage_system
+            context = PutawayContext(system=system, item=item)
+            result = putaway_item(context=context)
+            system = result.system
 
         # check all 8 items in storage system
-        assert len(storage_system.items) == len(items)
+        assert len(system.items) == len(items)
 
     def test_raises_exception_when_full(self) -> None:
-        storage_system_shape = StorageSystemShape("test_system", 2, 2, 2)
-        storage_system = StorageSystem(
-            shape=storage_system_shape,
+        system = StorageSystem(
+            shape=StorageSystemShape("test_system", 2, 2, 2),
         )
-        strategy = VerticalPlacementStrategy()
         items = [Item(f"item{i}") for i in range(9)]
 
-        assert storage_system.items == {}
+        assert system.items == {}
 
         # put away 8 items
         for item in items[:8]:
-            result = putaway_item(
-                storage_system=storage_system,
-                strategy=strategy,
-                item=item,
-            )
-            storage_system = result.storage_system
+            context = PutawayContext(system=system, item=item)
+            result = putaway_item(context=context)
+            system = result.system
 
         # try to put away the 9th item
+        context = PutawayContext(system=system, item=items[-1])
         with pytest.raises(PlacementError):
-            putaway_item(
-                storage_system=storage_system,
-                strategy=strategy,
-                item=items[-1],
-            )
+            putaway_item(context=context)
 
         # check only 8 items in storage system
-        assert len(storage_system.items) == len(items) - 1
+        assert len(system.items) == len(items) - 1

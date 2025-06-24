@@ -1,22 +1,27 @@
-from algorithm.application.results import PutawayResult
+from dataclasses import replace
+
 from algorithm.domain.exceptions import PlacementError
-from algorithm.domain.models import Item, Placement, StorageSystem
 from algorithm.domain.placement import place_item
-from algorithm.domain.strategies import PlacementStrategy
+from algorithm.domain.strategies import (
+    PutawayContext,
+    get_vertical_placements_for_putaway,
+)
 
 
 def putaway_item(
-    storage_system: StorageSystem,
-    strategy: PlacementStrategy,
-    item: Item,
-) -> PutawayResult:
-    candidate_placements: list[Placement] = strategy(storage_system)
+    context: PutawayContext,
+) -> PutawayContext:
+    context = get_vertical_placements_for_putaway(context)
 
-    if not candidate_placements:
+    if not context.placements:
         msg = "No candidate placements available"
         raise PlacementError(msg)
 
-    selected_placement = candidate_placements[0]
-    updated_storage_system = place_item(storage_system, selected_placement, item)
+    # TODO(parradam): add logic to select best location (decoupled from actual putaway)
+    selected_placement = context.placements[0]
+    context_with_selected_placement = replace(
+        context,
+        selected_placement=selected_placement,
+    )
 
-    return PutawayResult(updated_storage_system, selected_placement, item)
+    return place_item(context_with_selected_placement)
