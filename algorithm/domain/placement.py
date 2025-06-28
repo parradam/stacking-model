@@ -1,5 +1,3 @@
-from collections import defaultdict
-from copy import deepcopy
 from dataclasses import replace
 
 from algorithm.domain.exceptions import PlacementError
@@ -13,8 +11,8 @@ def place_item(context: PutawayContext) -> PutawayContext:
         msg = "No placement selected"
         raise PlacementError(msg)
 
-    final_items = defaultdict(list, deepcopy(context.system.items))
-    final_items[selected_placement].append(context.item)
+    final_items = dict(context.system.items)
+    final_items[selected_placement] = context.item
 
     final_placement = selected_placement
     final_system = replace(context.system, items=final_items)

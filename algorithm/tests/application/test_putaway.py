@@ -21,8 +21,7 @@ class TestPutaway:
         final_placement = output_context.final_placement
 
         assert final_placement
-        assert len(output_context.system.items[final_placement]) == 1
-        assert output_context.system.items[final_placement] == [item]
+        assert output_context.system.items[final_placement] == item
 
     def test_works_until_full(self) -> None:
         system = StorageSystem(

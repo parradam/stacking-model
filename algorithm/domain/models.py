@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass, field
 
 
@@ -26,7 +25,5 @@ class Item:
 @dataclass()
 class StorageSystem:
     shape: StorageSystemShape
-    items: defaultdict[Placement, list[Item]] = field(
-        default_factory=lambda: defaultdict(list),
-    )
+    items: dict[Placement, Item] = field(default_factory=dict[Placement, Item])
     max_weight: float | None = None

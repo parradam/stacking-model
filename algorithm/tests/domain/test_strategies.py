@@ -56,7 +56,7 @@ class TestVerticalPlacementStrategy:
             shape=StorageSystemShape("test_system", 4, 3, 2),
         )
         for item, placement in items_placements.items():
-            system.items[placement].append(Item(item))
+            system.items[placement] = Item(item)
         item = Item("item99")
 
         input_context = PutawayContext(system=system, item=item)
@@ -79,7 +79,7 @@ class TestVerticalPlacementStrategy:
             shape=StorageSystemShape("test_system", 2, 2, 2),
         )
         for item, placement in items_placements.items():
-            system.items[placement].append(Item(item))
+            system.items[placement] = Item(item)
         item = Item("item99")
 
         input_context = PutawayContext(system=system, item=item)
