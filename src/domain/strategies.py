@@ -1,7 +1,7 @@
 from dataclasses import replace
 
-from algorithm.domain.context import PutawayContext
-from algorithm.domain.placement import Placement
+from src.domain.context import PutawayContext
+from src.domain.placement import Placement
 
 
 def get_vertical_placements_for_putaway(context: PutawayContext) -> PutawayContext:

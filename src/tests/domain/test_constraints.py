@@ -1,17 +1,17 @@
 import pytest
 
-from algorithm.domain.constraints import (
+from src.domain.constraints import (
     ConstraintStatus,
     apply_max_height_constraint,
     apply_max_item_weight_constraint,
 )
-from algorithm.domain.item import Item, ItemMissingDataError
-from algorithm.domain.placement import Placement
-from algorithm.domain.storage_system import (
+from src.domain.item import Item, ItemMissingDataError
+from src.domain.placement import Placement
+from src.domain.storage_system import (
     StorageSystem,
     StorageSystemShape,
 )
-from algorithm.domain.strategies import PutawayContext
+from src.domain.strategies import PutawayContext
 
 
 # TODO(parradam): create lists of placements, map them to items with method

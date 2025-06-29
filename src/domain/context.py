@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 
-from algorithm.domain.item import Item
-from algorithm.domain.placement import Placement
-from algorithm.domain.storage_system import StorageSystem
+from src.domain.item import Item
+from src.domain.placement import Placement
+from src.domain.storage_system import StorageSystem
 
 
 @dataclass

@@ -1,10 +1,10 @@
-from algorithm.domain.item import Item
-from algorithm.domain.placement import Placement
-from algorithm.domain.storage_system import (
+from src.domain.item import Item
+from src.domain.placement import Placement
+from src.domain.storage_system import (
     StorageSystem,
     StorageSystemShape,
 )
-from algorithm.domain.strategies import (
+from src.domain.strategies import (
     PutawayContext,
     get_vertical_placements_for_putaway,
 )

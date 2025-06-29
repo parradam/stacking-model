@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
-from algorithm.domain.item import Item
-from algorithm.domain.placement import Placement
+from src.domain.item import Item
+from src.domain.placement import Placement
 
 
 class StorageSystemError(Exception):

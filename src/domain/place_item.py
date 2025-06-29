@@ -1,7 +1,7 @@
 from dataclasses import replace
 
-from algorithm.domain.placement import PlacementError
-from algorithm.domain.strategies import PutawayContext
+from src.domain.placement import PlacementError
+from src.domain.strategies import PutawayContext
 
 
 def place_item(context: PutawayContext) -> PutawayContext:
