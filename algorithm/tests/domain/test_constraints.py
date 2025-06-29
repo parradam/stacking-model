@@ -6,7 +6,12 @@ from algorithm.domain.constraints import (
     apply_max_item_weight_constraint,
 )
 from algorithm.domain.exceptions import ItemMissingDataError
-from algorithm.domain.models import Item, Placement, StorageSystem, StorageSystemShape
+from algorithm.domain.item import Item
+from algorithm.domain.placement import Placement
+from algorithm.domain.storage_system import (
+    StorageSystem,
+    StorageSystemShape,
+)
 from algorithm.domain.strategies import PutawayContext
 
 

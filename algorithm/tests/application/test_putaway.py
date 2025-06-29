@@ -2,7 +2,11 @@ import pytest
 
 from algorithm.application.putaway import putaway_item
 from algorithm.domain.exceptions import PlacementError
-from algorithm.domain.models import Item, StorageSystem, StorageSystemShape
+from algorithm.domain.item import Item
+from algorithm.domain.storage_system import (
+    StorageSystem,
+    StorageSystemShape,
+)
 from algorithm.domain.strategies import PutawayContext
 
 

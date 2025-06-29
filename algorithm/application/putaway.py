@@ -1,7 +1,7 @@
 from dataclasses import replace
 
 from algorithm.domain.exceptions import PlacementError
-from algorithm.domain.placement import place_item
+from algorithm.domain.place_item import place_item
 from algorithm.domain.strategies import (
     PutawayContext,
     get_vertical_placements_for_putaway,

@@ -1,16 +1,7 @@
-from dataclasses import dataclass, field, replace
+from dataclasses import replace
 
-from algorithm.domain.models import Item, Placement, StorageSystem
-
-
-@dataclass
-class PutawayContext:
-    system: StorageSystem
-    item: Item
-    selected_placement: Placement | None = None
-    final_placement: Placement | None = None
-    placements: list[Placement] = field(default_factory=list[Placement])
-    invalid_placements: list[Placement] = field(default_factory=list[Placement])
+from algorithm.domain.context import PutawayContext
+from algorithm.domain.placement import Placement
 
 
 def get_vertical_placements_for_putaway(context: PutawayContext) -> PutawayContext:

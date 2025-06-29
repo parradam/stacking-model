@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class Placement:
-    x: int
-    y: int
-    z: int
+class Item:
+    id: str
+    weight: float | None = None

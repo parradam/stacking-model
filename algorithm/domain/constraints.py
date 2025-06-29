@@ -6,7 +6,9 @@ from algorithm.domain.exceptions import (
     ItemMissingDataError,
     StorageSystemError,
 )
-from algorithm.domain.models import Item, Placement, StorageSystem
+from algorithm.domain.item import Item
+from algorithm.domain.placement import Placement
+from algorithm.domain.storage_system import StorageSystem
 from algorithm.domain.strategies import PutawayContext
 
 

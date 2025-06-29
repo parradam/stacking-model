@@ -1,11 +1,7 @@
 from dataclasses import dataclass, field
 
-
-@dataclass(frozen=True)
-class Placement:
-    x: int
-    y: int
-    z: int
+from algorithm.domain.item import Item
+from algorithm.domain.placement import Placement
 
 
 @dataclass
@@ -16,13 +12,7 @@ class StorageSystemShape:
     z: int
 
 
-@dataclass(frozen=True)
-class Item:
-    id: str
-    weight: float | None = None
-
-
-@dataclass()
+@dataclass
 class StorageSystem:
     shape: StorageSystemShape
     items: dict[Placement, Item] = field(default_factory=dict[Placement, Item])
