@@ -4,6 +4,10 @@ from algorithm.domain.item import Item
 from algorithm.domain.placement import Placement
 
 
+class StorageSystemError(Exception):
+    """Base class for all exceptions related to the storage system."""
+
+
 @dataclass
 class StorageSystemShape:
     name: str

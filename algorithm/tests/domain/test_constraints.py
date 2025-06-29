@@ -5,8 +5,7 @@ from algorithm.domain.constraints import (
     apply_max_height_constraint,
     apply_max_item_weight_constraint,
 )
-from algorithm.domain.exceptions import ItemMissingDataError
-from algorithm.domain.item import Item
+from algorithm.domain.item import Item, ItemMissingDataError
 from algorithm.domain.placement import Placement
 from algorithm.domain.storage_system import (
     StorageSystem,

@@ -1,6 +1,6 @@
 from dataclasses import replace
 
-from algorithm.domain.exceptions import PlacementError
+from algorithm.domain.placement import PlacementError
 from algorithm.domain.strategies import PutawayContext
 
 
