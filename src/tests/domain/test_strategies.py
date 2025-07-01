@@ -1,13 +1,11 @@
+from src.domain.context import PutawayContext
 from src.domain.item import Item
 from src.domain.placement import Placement
 from src.domain.storage_system import (
     StorageSystem,
     StorageSystemShape,
 )
-from src.domain.strategies import (
-    PutawayContext,
-    get_vertical_placements_for_putaway,
-)
+from src.domain.strategies import get_vertical_placements_for_putaway
 
 
 class TestVerticalPlacementStrategy:
@@ -62,9 +60,9 @@ class TestVerticalPlacementStrategy:
         )
         for item, placement in items_placements.items():
             system.items[placement] = Item(item)
-        item = Item("item99")
+        new_item = Item("item99")
 
-        input_context = PutawayContext(system=system, item=item)
+        input_context = PutawayContext(system=system, item=new_item)
         output_context = get_vertical_placements_for_putaway(input_context)
 
         assert output_context.placements == expected_placements
@@ -85,9 +83,9 @@ class TestVerticalPlacementStrategy:
         )
         for item, placement in items_placements.items():
             system.items[placement] = Item(item)
-        item = Item("item99")
+        new_item = Item("item99")
 
-        input_context = PutawayContext(system=system, item=item)
+        input_context = PutawayContext(system=system, item=new_item)
         output_context = get_vertical_placements_for_putaway(input_context)
 
         assert len(output_context.placements) == 0

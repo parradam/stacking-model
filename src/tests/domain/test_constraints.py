@@ -5,13 +5,13 @@ from src.domain.constraints import (
     apply_max_height_constraint,
     apply_max_item_weight_constraint,
 )
+from src.domain.context import PutawayContext
 from src.domain.item import Item, ItemMissingDataError
 from src.domain.placement import Placement
 from src.domain.storage_system import (
     StorageSystem,
     StorageSystemShape,
 )
-from src.domain.strategies import PutawayContext
 
 
 # TODO(parradam): create lists of placements, map them to items with method

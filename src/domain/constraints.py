@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field, replace
 from enum import Enum
 
+from src.domain.context import PutawayContext
 from src.domain.item import Item, ItemMissingDataError
 from src.domain.placement import Placement
 from src.domain.storage_system import StorageSystem, StorageSystemError
-from src.domain.strategies import PutawayContext
 
 
 class ConstraintError(Exception):

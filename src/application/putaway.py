@@ -1,11 +1,9 @@
 from dataclasses import replace
 
+from src.domain.context import PutawayContext
 from src.domain.place_item import place_item
 from src.domain.placement import PlacementError
-from src.domain.strategies import (
-    PutawayContext,
-    get_vertical_placements_for_putaway,
-)
+from src.domain.strategies import get_vertical_placements_for_putaway
 
 
 def putaway_item(

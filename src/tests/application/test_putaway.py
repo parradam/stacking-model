@@ -1,13 +1,13 @@
 import pytest
 
 from src.application.putaway import putaway_item
+from src.domain.context import PutawayContext
 from src.domain.item import Item
 from src.domain.placement import PlacementError
 from src.domain.storage_system import (
     StorageSystem,
     StorageSystemShape,
 )
-from src.domain.strategies import PutawayContext
 
 
 class TestPutaway:
